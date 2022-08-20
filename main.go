@@ -6,7 +6,7 @@ import (
 	"github.com/machado-br/k8s-api/adapters/aws"
 	"github.com/machado-br/k8s-api/adapters/k8s"
 	"github.com/machado-br/k8s-api/services/createKubeConfig"
-	describecluster "github.com/machado-br/k8s-api/services/describeCluster"
+	"github.com/machado-br/k8s-api/services/describeCluster"
 )
 
 const (
@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Failed while creating cloud provider adapter: %v", err)
 	}
 
-	describeClusterService, err := describecluster.NewService(cloudProviderAdapter)
+	describeClusterService, err := describeCluster.NewService(cloudProviderAdapter)
 	if err != nil {
 		log.Fatalf("Failed while creating createKubeConfig service: %v", err)
 	}

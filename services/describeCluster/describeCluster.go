@@ -1,4 +1,4 @@
-package describecluster
+package describeCluster
 
 import (
 	"log"
