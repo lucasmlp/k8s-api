@@ -5,10 +5,10 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/machado-br/k8s-api/adapters"
 
 	"github.com/aws/aws-sdk-go/service/eks"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
@@ -17,6 +17,7 @@ import (
 
 func newClientset(cluster *eks.Cluster) (*kubernetes.Clientset, error) {
     log.Printf("%+v", cluster)
+
     gen, err := token.NewGenerator(true, false)
     if err != nil {
         return nil, err
@@ -51,23 +52,21 @@ func main() {
     name := "e-commerce"
     region := "us-west-2"
 
-    sess := session.Must(session.NewSession(&aws.Config{
-        Region: aws.String(region),
-    }))
-    eksSvc := eks.New(sess)
+	cloudProviderAdapter, err := adapters.NewAdapter(region, name)
+	if err != nil {
+		log.Fatalf("Failed while creating cloud provider adapter: %v", err)
+	}
 
-    input := &eks.DescribeClusterInput{
-        Name: aws.String(name),
-    }
-    result, err := eksSvc.DescribeCluster(input)
-    if err != nil {
-        log.Fatalf("Error calling DescribeCluster: %v", err)
-    }
+	result, err := cloudProviderAdapter.DescribeCluster()
+	if err != nil {
+		log.Fatalf("Failed while calling DescribeCluster: %v", err)
+	}
+	
     clientset, err := newClientset(result.Cluster)
     if err != nil {
         log.Fatalf("Error creating clientset: %v", err)
     }
-    nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
+    nodes, err := clientset.CoreV1().Nodes().List(v1.ListOptions{})
     if err != nil {
         log.Fatalf("Error getting EKS nodes: %v", err)
     }
