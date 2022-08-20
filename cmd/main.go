@@ -35,7 +35,7 @@ func main() {
 		log.Fatalf("Failed while creating k8s adapter: %v", err)
 	}
 
-	createKubeConfigService, err := createKubeConfig.NewService(name, region, k8sAdapter)
+	createKubeConfigService, err := createKubeConfig.NewService(k8sAdapter)
 	if err != nil {
 		log.Fatalf("Failed while creating createKubeConfig service: %v", err)
 	}

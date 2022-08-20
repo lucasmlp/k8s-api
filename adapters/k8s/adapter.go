@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/machado-br/k8s-api/adapters/models"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -19,7 +18,7 @@ type adapter struct{
 }
 
 type Adapter interface{
-    RetrieveSecret(namespace string ) (*v1.SecretList, error)
+    RetrieveSecret(namespace string ) ([]byte, error)
     WriteToFile(certificate []byte) error 
 }
 
@@ -71,13 +70,19 @@ func newClientset(cluster models.Cluster) (*kubernetes.Clientset, error) {
     return clientset, nil
 }
 
-func (a adapter) RetrieveSecret(namespace string ) (*v1.SecretList, error){
+func (a adapter) RetrieveSecret(namespace string ) ([]byte, error){
     secretList, err := a.clientSet.CoreV1().Secrets(namespace).List(metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-    return secretList, nil
+	if len(secretList.Items) == 0 {
+		log.Panicln("Secret list is empty")
+	}
+
+	secret := secretList.Items[0].Data["ca.crt"]
+
+    return secret, nil
 }
 
 func (a adapter) WriteToFile(certificate []byte) error {

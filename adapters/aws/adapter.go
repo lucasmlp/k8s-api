@@ -1,9 +1,13 @@
 package aws
 
 import (
+	"log"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/eks"
+	"github.com/machado-br/k8s-api/adapters/models"
+	"github.com/machado-br/k8s-api/infra"
 )
 
 type adapter struct{
@@ -14,7 +18,7 @@ type adapter struct{
 }
 
 type Adapter interface{
-	DescribeCluster() (*eks.DescribeClusterOutput, error)
+	DescribeCluster() (models.Cluster, error)
 }
 
 func NewAdapter(
@@ -35,7 +39,7 @@ func NewAdapter(
 	}, nil
 }
 
-func (a adapter) DescribeCluster() (*eks.DescribeClusterOutput, error){
+func (a adapter) DescribeCluster() (models.Cluster, error){
 	
     input := &eks.DescribeClusterInput{
         Name: aws.String(a.clusterName),
@@ -43,8 +47,18 @@ func (a adapter) DescribeCluster() (*eks.DescribeClusterOutput, error){
 
     result, err := a.eks.DescribeCluster(input)
     if err != nil {
-        return nil, err
+        return models.Cluster{}, err
     }
 
-	return result, nil
+	ca, err := infra.DecodeString(infra.StringValue(result.Cluster.CertificateAuthority.Data))
+    if err != nil {
+		log.Fatalf("Failed while decoding certificate: %v", err)
+    }
+
+	return models.Cluster{
+		Arn: infra.StringValue(result.Cluster.Arn),
+		Name: infra.StringValue(result.Cluster.Name),
+		Endpoint: infra.StringValue(result.Cluster.Endpoint),
+		Certificate: ca,
+	}, nil
 }
