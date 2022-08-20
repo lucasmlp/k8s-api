@@ -23,10 +23,7 @@ func main() {
 		log.Fatalf("Failed while calling DescribeCluster: %v", err)
 	}
 
-	k8sAdapter, err := k8sAdapter.NewAdapter()
-	if err != nil {
-		log.Fatalf("Failed while creating k8s adapter: %v", err)
-	}
+	log.Printf("result: %v\n", result)
 
     ca, err := infra.DecodeString(infra.StringValue(result.Cluster.CertificateAuthority.Data))
     if err != nil {
@@ -34,67 +31,26 @@ func main() {
     }
 
 	cluster := models.Cluster{
+		Arn: infra.StringValue(result.Cluster.Arn),
 		Name: infra.StringValue(result.Cluster.Name),
 		Endpoint: infra.StringValue(result.Cluster.Endpoint),
 		Certificate: ca,
 	}
 
-    _, err = k8sAdapter.NewClientset(cluster)
-    if err != nil {
-        log.Fatalf("Error creating clientset: %v", err)
-    }
-	secretList, err := clientset.CoreV1().Secrets("dev").List(metav1.ListOptions{})
+	k8sAdapter, err := k8sAdapter.NewAdapter(cluster)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("Failed while creating k8s adapter: %v", err)
 	}
 
-	secret := secretList.Items[1]
-
-	clustersList := map[string]*api.Cluster{
-		*result.Cluster.Arn: {
-			Server:                   *result.Cluster.Endpoint,
-			CertificateAuthorityData: secret.Data["ca.crt"],
-		},
-	}
-
-	contextList := map[string]*api.Context{
-		*result.Cluster.Arn: {
-			Cluster:  *result.Cluster.Arn,
-			AuthInfo: *result.Cluster.Arn,
-		},
-	}
-
-	execEnvList := []api.ExecEnvVar{
-		{
-			Name:  "AWS_PROFILE",
-			Value: "ihm",
-		},
-	}
-
-	exec := api.ExecConfig{
-		Command:    "aws",
-		Args:       []string{"eks", "get-token", "--region", "us-west-2", "--cluster-name", "zetta-non-prod"},
-		Env:        execEnvList,
-		APIVersion: "client.authentication.k8s.io/v1beta1",
-	}
-
-	authInfoList := map[string]*api.AuthInfo{
-		*result.Cluster.Arn: {
-			Exec: &exec,
-		},
-	}
-
-	clientConfig := api.Config{
-		Kind:           "Config",
-		APIVersion:     "v1",
-		Clusters:       clustersList,
-		Contexts:       contextList,
-		AuthInfos:      authInfoList,
-		CurrentContext: *result.Cluster.Arn,
-	}
-
-	err = clientcmd.WriteToFile(clientConfig, "./kubeconfig")
+	secretList, err := k8sAdapter.RetrieveSecret("default")
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("Failed while retrieving k8s secret: %v", err)
+	}
+
+	secret := secretList.Items[0]
+
+	err = k8sAdapter.WriteToFile(secret.Data["ca.crt"])
+	if err != nil {
+		log.Fatalf("Failed while writing kubeconfig file: %v", err)
 	}
 }
