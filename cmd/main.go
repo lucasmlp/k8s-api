@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/machado-br/k8s-api/adapters/aws"
 	"github.com/machado-br/k8s-api/adapters/k8s"
@@ -9,12 +10,10 @@ import (
 	"github.com/machado-br/k8s-api/services/describeCluster"
 )
 
-const (
-	name = "e-commerce"
-    region = "us-west-2"
-)
-
 func main() {
+
+	name := os.Getenv("CLUSTER_NAME")
+	region := os.Getenv("AWS_REGION")
 
 	cloudProviderAdapter, err := aws.NewAdapter(region, name)
 	if err != nil {
