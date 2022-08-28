@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/machado-br/k8s-api/adapters/models"
+	"golang.org/x/net/context"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -71,7 +72,7 @@ func newClientset(cluster models.Cluster) (*kubernetes.Clientset, error) {
 }
 
 func (a adapter) RetrieveSecret(namespace string ) ([]byte, error){
-    secretList, err := a.clientSet.CoreV1().Secrets(namespace).List(metav1.ListOptions{})
+    secretList, err := a.clientSet.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +122,7 @@ func (a adapter) WriteToFile(certificate []byte) error {
 		CurrentContext: a.cluster.Arn,
 	}
 
-	err := clientcmd.WriteToFile(clientConfig, "~/config/kubec")
+	err := clientcmd.WriteToFile(clientConfig, "./config/kube")
 	if err != nil {
 		return err
 	}
