@@ -43,6 +43,7 @@ func (a adapter) DescribeCluster() (models.Cluster, error){
 	
     input := &eks.DescribeClusterInput{
         Name: aws.String(a.clusterName),
+		
     }
 
     result, err := a.eks.DescribeCluster(input)

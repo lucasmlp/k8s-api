@@ -121,7 +121,7 @@ func (a adapter) WriteToFile(certificate []byte) error {
 		CurrentContext: a.cluster.Arn,
 	}
 
-	err := clientcmd.WriteToFile(clientConfig, "./kubeconfig")
+	err := clientcmd.WriteToFile(clientConfig, "~/config/kubec")
 	if err != nil {
 		return err
 	}

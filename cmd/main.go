@@ -15,12 +15,12 @@ func main() {
 	name := os.Getenv("CLUSTER_NAME")
 	region := os.Getenv("AWS_REGION")
 
-	cloudProviderAdapter, err := aws.NewAdapter(region, name)
+	awsAdapter, err := aws.NewAdapter(region, name)
 	if err != nil {
 		log.Fatalf("Failed while creating cloud provider adapter: %v", err)
 	}
 
-	describeClusterService, err := describeCluster.NewService(cloudProviderAdapter)
+	describeClusterService, err := describeCluster.NewService(awsAdapter)
 	if err != nil {
 		log.Fatalf("Failed while creating createKubeConfig service: %v", err)
 	}
