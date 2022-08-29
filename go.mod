@@ -1,11 +1,11 @@
 module github.com/machado-br/k8s-api
 
-go 1.17
+go 1.18
 
 require (
-	github.com/aws/aws-sdk-go v1.38.49
+	github.com/aws/aws-sdk-go v1.43.16
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
-	helm.sh/helm/v3 v3.9.4
+	helm.sh/helm/v3 v3.9.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
 	sigs.k8s.io/aws-iam-authenticator v0.5.5
@@ -86,6 +86,7 @@ require (
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.3-0.20211202183452-c5a74bcca799 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
