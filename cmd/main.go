@@ -7,6 +7,7 @@ import (
 	"github.com/machado-br/k8s-api/adapters/aws"
 	"github.com/machado-br/k8s-api/adapters/helm"
 	"github.com/machado-br/k8s-api/adapters/k8s"
+	"github.com/machado-br/k8s-api/api"
 	"github.com/machado-br/k8s-api/services/createKubeConfig"
 	"github.com/machado-br/k8s-api/services/describeCluster"
 	"github.com/machado-br/k8s-api/services/listReleases"
@@ -64,10 +65,10 @@ func main() {
 		log.Fatalf("failed while creating list releases service: %v", err)
 	}
 
-	releases, err := listReleasesService.Run()
+	api, err := api.NewApi(listReleasesService)
 	if err != nil {
-		log.Fatalf("failed while listing releases: %v", err)
+		log.Fatalf("failed while creating api: %v", err)
 	}
 
-	log.Printf("releases: %v\n", releases)
+	api.Run()
 }

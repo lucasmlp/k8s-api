@@ -3,9 +3,9 @@ export $(shell sed 's/=.*//' .env)
 
 GOPATH=$(shell go env GOPATH)
 
-list-releases:
+server:
 	@ echo
-	@ echo "Listing helm releases on cluster ..."
+	@ echo "Spinning up server..."
 	@ echo
 	@ rm -rf ./config/kube
 	@ go run ./cmd/main.go
