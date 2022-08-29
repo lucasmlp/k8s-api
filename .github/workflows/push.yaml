@@ -5,29 +5,64 @@ on:
     branches:
       - 'master'
 
+env:
+  GO_VERSION: "1.18"
+  ECR_REPOSITORY: k8s-api
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
+      - name: 🛒 Checkout
+        id: checkout
+        uses: actions/checkout@main
         with:
-          go-version: 1.18
+          fetch-depth: 0
 
-      - name: Build
+      - name: ⚙️ Setup Go
+        id: setup-go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: ⚙️ Setup staticcheck
+        id: setup-staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: 🔎 Verify dependencies
+        id: go-verify
+        run: go mod verify
+
+      - name: 🔨 Build
+        id: go-build
         run: go build -v ./...
 
-      - name: Test
-        run: go test -v ./...
+      - name: 🧐 Go Vet
+        id: go-vet
+        run: go vet ./...
 
-  push-docker:
+      - name: 🧪 Test
+        run: go test ./...
+
+  docker-build:
+    name: 🐳 Docker Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: dev
     needs:
       build
     steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ Setup GitVersion
+        id: setup-gitversion
+        uses: gittools/actions/gitversion/setup@main
+        with:
+          versionSpec: "5.x"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -45,14 +80,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: e-commerce-api
-          IMAGE_TAG: ${{ github.sha }}
-          GO111MODULE: on
-          CGO_ENABLED: 0
-          GOOS: linux
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: 🏷️ Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@main
+
+      - name: ⌚ Commit Unix Time
+        id: commit-unix-time
+        run: echo "COMMIT_UNIX_TIME=$(git show -s --format=%ct)" >> $GITHUB_ENV
+
+      - name: 🐳 Docker Metadata
+        id: docker-metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=raw,value={{branch}}-${{ env.COMMIT_UNIX_TIME }}
+      - name: 🐳 Docker Build and Push
+        id: docker-build-push
+        uses: docker/build-push-action@master
+        with:
+          push: true
+          context: .
+          platforms: linux/amd64
+          tags: ${{ steps.docker-metadata.outputs.tags }}
+          labels: ${{ steps.docker-metadata.outputs.labels }}
