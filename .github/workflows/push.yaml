@@ -54,7 +54,7 @@ jobs:
     timeout-minutes: 15
     environment: dev
     needs:
-      build
+      test
     steps:
       - name: 🛒 Checkout
         uses: actions/checkout@v2
