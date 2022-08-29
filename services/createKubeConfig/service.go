@@ -24,7 +24,7 @@ func NewService(
 
 func (s service) Run() error{
 
-	secret, err := s.k8sAdapter.RetrieveSecret("default")
+	secret, err := s.k8sAdapter.RetrieveSecret()
 	if err != nil {
 		log.Fatalf("Failed while retrieving k8s secret: %v", err)
 	}

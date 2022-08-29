@@ -22,5 +22,10 @@ func NewService(
 }
 
 func (s service) Run() ([]models.Release, error) {
-	return []models.Release{}, nil
+	releases := s.helmAdapter.ListReleases()
+	// if err != nil {
+	// 	return []models.Release{}, errors.New("failed while listing releases")
+	// }
+	
+	return releases, nil
 }

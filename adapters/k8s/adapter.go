@@ -16,15 +16,19 @@ import (
 type adapter struct{
     cluster models.Cluster
     clientSet *kubernetes.Clientset
+	namespace string
+	region string
 }
 
 type Adapter interface{
-    RetrieveSecret(namespace string ) ([]byte, error)
+    RetrieveSecret() ([]byte, error)
     WriteToFile(certificate []byte) error 
 }
 
 func NewAdapter(
     cluster models.Cluster,
+	namespace string,
+	region string,
 ) (adapter, error) {
     clientSet, err := newClientset(cluster)
     if err != nil {
@@ -34,6 +38,8 @@ func NewAdapter(
 	return adapter{
         cluster: cluster,
         clientSet: clientSet,
+		namespace: namespace,
+		region: region,
 	}, nil
 }
 
@@ -71,8 +77,8 @@ func newClientset(cluster models.Cluster) (*kubernetes.Clientset, error) {
     return clientset, nil
 }
 
-func (a adapter) RetrieveSecret(namespace string ) ([]byte, error){
-    secretList, err := a.clientSet.CoreV1().Secrets(namespace).List(context.TODO(), metav1.ListOptions{})
+func (a adapter) RetrieveSecret() ([]byte, error){
+    secretList, err := a.clientSet.CoreV1().Secrets(a.namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +109,7 @@ func (a adapter) WriteToFile(certificate []byte) error {
 
 	exec := api.ExecConfig{
 		Command:    "aws",
-		Args:       []string{"eks", "get-token", "--region", "us-west-2", "--cluster-name", a.cluster.Name},
+		Args:       []string{"eks", "get-token", "--region", a.region, "--cluster-name", a.cluster.Name},
 		APIVersion: "client.authentication.k8s.io/v1beta1",
 	}
 

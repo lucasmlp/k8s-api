@@ -2,11 +2,11 @@ package helm
 
 import (
 	"log"
-	"os"
 
 	"github.com/machado-br/k8s-api/adapters/models"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/kube"
+	"helm.sh/helm/v3/pkg/release"
 )
 
 type adapter struct{
@@ -18,21 +18,15 @@ type Adapter interface{
 }
 
 func NewAdapter(
+	namespace string,
+	configPath string,
+	driver string,
 ) (adapter, error) {
-	kubeconfigPath := "./config/kube"
-	releaseNamespace := "default"
 
 	actionConfig := new(action.Configuration)
-	if err := actionConfig.Init(kube.GetConfig(kubeconfigPath, "", releaseNamespace), releaseNamespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
+	if err := actionConfig.Init(kube.GetConfig(configPath, "", namespace), namespace, driver, log.Printf); err != nil {
 		panic(err)
 	}
-
-    // settings := cli.New()
-	// actionConfig := new(action.Configuration)
-	// if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
-    //     log.Printf("%+v", err)
-    //     os.Exit(1)
-    // }
 
 	return adapter{
 		action: actionConfig,
@@ -46,6 +40,16 @@ func (a adapter) ListReleases() []models.Release{
 		log.Panicln(err)
 	}
 
-	log.Printf("releases: %v\n", releases)
-	return []models.Release{}
+	return mapToReleaseModel(releases)
+}
+
+func mapToReleaseModel(releases []*release.Release) []models.Release {
+	releaseList := []models.Release{}
+	for _, release := range releases {
+		releaseList = append(releaseList, models.Release{
+				Name: release.Name,
+			},)
+	}
+
+	return releaseList
 }

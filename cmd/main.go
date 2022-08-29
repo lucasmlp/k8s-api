@@ -16,6 +16,7 @@ func main() {
 
 	name := os.Getenv("CLUSTER_NAME")
 	region := os.Getenv("AWS_REGION")
+	namespace := os.Getenv("NAMESPACE")
 
 	awsAdapter, err := aws.NewAdapter(region, name)
 	if err != nil {
@@ -32,7 +33,7 @@ func main() {
 		log.Fatalf("failed while retrieving cluster information: %v", err)
 	}
 
-	k8sAdapter, err := k8s.NewAdapter(cluster)
+	k8sAdapter, err := k8s.NewAdapter(cluster, namespace, region)
 	if err != nil {
 		log.Fatalf("failed while creating k8s adapter: %v", err)
 	}
@@ -47,9 +48,13 @@ func main() {
 		log.Fatalf("failed while creating createKubeConfig file: %v", err)
 	}
 
-	log.Println("Kubeconfig file created successfuly")
+	log.Println("Kubernetes configuration file created successfuly")
 
-	helmAdapter, err := helm.NewAdapter()
+	kubeconfigPath := "./config/kube"
+
+	helmDriver := os.Getenv("HELM_DRIVER")
+
+	helmAdapter, err := helm.NewAdapter(namespace, kubeconfigPath, helmDriver)
 	if err != nil {
 		log.Fatalf("failed while creating helm adapter: %v", err)
 	}
