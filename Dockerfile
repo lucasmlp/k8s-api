@@ -17,4 +17,4 @@ RUN go build -a -o cmd ./cmd
 FROM alpine as final
 COPY --from=builder /k8s_api/cmd /go/bin/cmd
 RUN apk add -U --no-cache ca-certificates
-ENTRYPOINT /go/bin/api
+ENTRYPOINT /go/bin/cmd
