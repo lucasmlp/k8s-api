@@ -15,6 +15,8 @@ RUN go build -a -o cmd ./cmd
 
 # STAGE 2: Build final image
 FROM alpine as final
-COPY --from=builder /k8s_api/cmd /go/bin/cmd
+COPY --from=builder /k8s_api/cmd/cmd /go/bin/cmd
 RUN apk add -U --no-cache ca-certificates
 ENTRYPOINT /go/bin/cmd
+
+EXPOSE 8080
