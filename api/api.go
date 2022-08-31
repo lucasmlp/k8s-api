@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,11 +9,11 @@ import (
 )
 
 type api struct {
-	ListReleasesService   listReleases.Service
+	ListReleasesService listReleases.Service
 }
 
 func NewApi(
-	ListReleasesService   listReleases.Service,
+	ListReleasesService listReleases.Service,
 ) (api, error) {
 	return api{
 		ListReleasesService: ListReleasesService,
@@ -20,11 +21,14 @@ func NewApi(
 }
 
 func (a api) Engine() *gin.Engine {
-	router := gin.Default()
+	router := gin.New()
+	router.SetTrustedProxies(nil)
 
 	root := router.Group("")
 	{
 		root.GET("/ping", func(c *gin.Context) {
+			log.Printf("ClientIP: %s\n", c.ClientIP())
+
 			c.JSON(http.StatusOK, "pong")
 		})
 	}
