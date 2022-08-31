@@ -49,7 +49,7 @@ func main() {
 		log.Fatalf("failed while creating createKubeConfig file: %v", err)
 	}
 
-	log.Println("Kubernetes configuration file created successfuly")
+	log.Println("Kubernetes configuration file created successfully")
 
 	kubeconfigPath := "./config/kube"
 
