@@ -1,1 +1,1 @@
-![main branch](https://github.com/machado-br/k8s-api/actions/workflows/push.yaml/badge.svg)
+![master branch](https://github.com/machado-br/k8s-api/actions/workflows/push.yml/badge.svg?branch=master)
