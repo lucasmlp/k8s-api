@@ -1,8 +1,8 @@
 package models
 
-type Cluster struct{
-	Arn string
-	Name string
-	Endpoint string
+type Cluster struct {
+	Arn         string
+	Name        string
+	Endpoint    string
 	Certificate []byte
 }

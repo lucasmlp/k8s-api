@@ -13,72 +13,72 @@ import (
 	"sigs.k8s.io/aws-iam-authenticator/pkg/token"
 )
 
-type adapter struct{
-    cluster models.Cluster
-    clientSet *kubernetes.Clientset
+type adapter struct {
+	cluster   models.Cluster
+	clientSet *kubernetes.Clientset
 	namespace string
-	region string
+	region    string
 }
 
-type Adapter interface{
-    RetrieveSecret() ([]byte, error)
-    WriteToFile(certificate []byte) error 
+type Adapter interface {
+	RetrieveSecret() ([]byte, error)
+	WriteToFile(certificate []byte) error
 }
 
 func NewAdapter(
-    cluster models.Cluster,
+	cluster models.Cluster,
 	namespace string,
 	region string,
 ) (adapter, error) {
-    clientSet, err := newClientset(cluster)
-    if err != nil {
-        return adapter{}, err
-    }
+	clientSet, err := newClientset(cluster)
+	if err != nil {
+		return adapter{}, err
+	}
 
 	return adapter{
-        cluster: cluster,
-        clientSet: clientSet,
+		cluster:   cluster,
+		clientSet: clientSet,
 		namespace: namespace,
-		region: region,
+		region:    region,
 	}, nil
 }
 
 func newClientset(cluster models.Cluster) (*kubernetes.Clientset, error) {
-    log.Printf("Cluster name: %+v", cluster.Name)
+	log.Printf("Cluster name: %+v", cluster.Name)
 
-    gen, err := token.NewGenerator(true, false)
-    if err != nil {
-        return nil, err
-    }
+	gen, err := token.NewGenerator(true, false)
+	if err != nil {
+		return nil, err
+	}
 
-    opts := &token.GetTokenOptions{
-        ClusterID: cluster.Name,
-    }
+	opts := &token.GetTokenOptions{
+		ClusterID: cluster.Name,
+	}
 
-    tok, err := gen.GetWithOptions(opts)
-    if err != nil {
-        return nil, err
-    }
+	tok, err := gen.GetWithOptions(opts)
+	if err != nil {
+		return nil, err
+	}
 
-    clientset, err := kubernetes.NewForConfig(
-        &rest.Config{
-            Host:        cluster.Endpoint,
-            BearerToken: tok.Token,
-            TLSClientConfig: rest.TLSClientConfig{
-                CAData: cluster.Certificate,
-            },
-        },
-    )
+	clientset, err := kubernetes.NewForConfig(
+		&rest.Config{
+			Host:        cluster.Endpoint,
+			BearerToken: tok.Token,
+			TLSClientConfig: rest.TLSClientConfig{
+				CAData: cluster.Certificate,
+			},
+		},
+	)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    return clientset, nil
+	return clientset, nil
 }
 
-func (a adapter) RetrieveSecret() ([]byte, error){
-    secretList, err := a.clientSet.CoreV1().Secrets(a.namespace).List(context.TODO(), metav1.ListOptions{})
+func (a adapter) RetrieveSecret() ([]byte, error) {
+	secretList, err := a.clientSet.CoreV1().Secrets(a.namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -89,11 +89,11 @@ func (a adapter) RetrieveSecret() ([]byte, error){
 
 	secret := secretList.Items[0].Data["ca.crt"]
 
-    return secret, nil
+	return secret, nil
 }
 
 func (a adapter) WriteToFile(certificate []byte) error {
-    clustersList := map[string]*api.Cluster{
+	clustersList := map[string]*api.Cluster{
 		a.cluster.Arn: {
 			Server:                   a.cluster.Endpoint,
 			CertificateAuthorityData: certificate,
@@ -133,5 +133,5 @@ func (a adapter) WriteToFile(certificate []byte) error {
 		return err
 	}
 
-    return nil
+	return nil
 }

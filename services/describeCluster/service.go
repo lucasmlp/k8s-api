@@ -11,23 +11,23 @@ type service struct {
 	cloudProviderAdapter aws.Adapter
 }
 
-type Service interface{
+type Service interface {
 	Run() (models.Cluster, error)
 }
 
 func NewService(
 	cloudProviderAdapter aws.Adapter,
-) (service, error){
+) (service, error) {
 	return service{
 		cloudProviderAdapter: cloudProviderAdapter,
 	}, nil
 }
 
-func (s service) Run() (models.Cluster, error){
+func (s service) Run() (models.Cluster, error) {
 	cluster, err := s.cloudProviderAdapter.DescribeCluster()
 	if err != nil {
 		log.Fatalf("Failed while calling DescribeCluster: %v", err)
 	}
 
-    return cluster, nil
+	return cluster, nil
 }

@@ -10,19 +10,19 @@ type service struct {
 	k8sAdapter k8s.Adapter
 }
 
-type Service interface{
+type Service interface {
 	Run() error
 }
 
 func NewService(
 	k8sAdapter k8s.Adapter,
-) (service, error){
+) (service, error) {
 	return service{
 		k8sAdapter: k8sAdapter,
 	}, nil
 }
 
-func (s service) Run() error{
+func (s service) Run() error {
 
 	secret, err := s.k8sAdapter.RetrieveSecret()
 	if err != nil {

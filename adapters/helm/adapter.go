@@ -9,11 +9,11 @@ import (
 	"helm.sh/helm/v3/pkg/release"
 )
 
-type adapter struct{
+type adapter struct {
 	action *action.Configuration
 }
 
-type Adapter interface{
+type Adapter interface {
 	ListReleases() []models.Release
 }
 
@@ -32,10 +32,10 @@ func NewAdapter(
 		action: actionConfig,
 	}, nil
 }
-func (a adapter) ListReleases() []models.Release{
+func (a adapter) ListReleases() []models.Release {
 
 	listAction := action.NewList(a.action)
-	releases, err := listAction.Run();
+	releases, err := listAction.Run()
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -47,8 +47,8 @@ func mapToReleaseModel(releases []*release.Release) []models.Release {
 	releaseList := []models.Release{}
 	for _, release := range releases {
 		releaseList = append(releaseList, models.Release{
-				Name: release.Name,
-			},)
+			Name: release.Name,
+		})
 	}
 
 	return releaseList

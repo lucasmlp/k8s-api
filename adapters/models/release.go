@@ -1,5 +1,5 @@
 package models
 
-type Release struct{
+type Release struct {
 	Name string
 }
