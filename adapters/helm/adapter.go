@@ -25,7 +25,7 @@ func NewAdapter(
 
 	actionConfig := new(action.Configuration)
 	if err := actionConfig.Init(kube.GetConfig(configPath, "", namespace), namespace, driver, log.Printf); err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	return adapter{
