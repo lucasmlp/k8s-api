@@ -1,0 +1,1 @@
+![fluxo de trabalho de exemplo](https://github.com/github/docs/actions/workflows/push.yml/badge.svg)
