@@ -1,4 +1,4 @@
-package k8s
+package namespace
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (a adapter) CreateNamespace(ctx context.Context, namespaceModel models.Namespace) error {
+func (a adapter) Create(ctx context.Context, namespaceModel models.Namespace) error {
 	namespace := &v1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: namespaceModel.Name,

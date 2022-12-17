@@ -7,7 +7,7 @@ import (
 )
 
 func (s *service) RetrieveAll(ctx context.Context) ([]models.Namespace, error) {
-	namespaceList, err := s.Adapter.RetrieveAllNamespaces(ctx)
+	namespaceList, err := s.Adapter.RetrieveAll(ctx)
 	if err != nil {
 		return nil, err
 	}

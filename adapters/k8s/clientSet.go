@@ -10,24 +10,7 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-type adapter struct {
-	Deployed  bool
-	ClientSet *kubernetes.Clientset
-}
-
-func NewAdapter(deployed bool) (adapter, error) {
-	clientSet, err := retrieveClientSet(deployed)
-	if err != nil {
-		return adapter{}, err
-	}
-
-	return adapter{
-		Deployed:  deployed,
-		ClientSet: clientSet,
-	}, nil
-}
-
-func retrieveClientSet(deployed bool) (*kubernetes.Clientset, error) {
+func RetrieveClientSet(deployed bool) (*kubernetes.Clientset, error) {
 	var clientset *kubernetes.Clientset
 
 	if deployed {

@@ -11,7 +11,7 @@ import (
 
 func (a API) retrieveAll(c *gin.Context) {
 
-	result, err := a.NamespaceService.RetrieveAll(c)
+	result, err := a.Service.RetrieveAll(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -34,7 +34,7 @@ func (a API) create(c *gin.Context) {
 		Name: payload.Name,
 	}
 
-	err = a.NamespaceService.CreateNamespace(c, namespace)
+	err = a.Service.CreateNamespace(c, namespace)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -47,11 +47,24 @@ func (a API) delete(c *gin.Context) {
 
 	name := c.Param("name")
 
-	err := a.NamespaceService.DeleteNamespace(c, name)
+	err := a.Service.DeleteNamespace(c, name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func (a API) retrieve(c *gin.Context) {
+
+	name := c.Param("name")
+
+	result, err := a.Service.Retrieve(c, name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }

@@ -5,23 +5,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/machado-br/k8s-api/adapters/k8s"
 	"github.com/machado-br/k8s-api/services/namespace"
 )
 
 type API struct {
-	Deployed         bool
-	Adapter          k8s.Adapter
-	NamespaceService namespace.Service
+	Deployed bool
+	Service  namespace.Service
 }
 
 func NewApi(
-	adapter k8s.Adapter,
-	namespaceService namespace.Service,
+	service namespace.Service,
 ) (API, error) {
 	return API{
-		Adapter:          adapter,
-		NamespaceService: namespaceService,
+		Service: service,
 	}, nil
 }
 
@@ -40,6 +36,7 @@ func (a API) Engine() *gin.Engine {
 		root.GET("/", a.retrieveAll)
 		root.POST("/", a.create)
 		root.DELETE("/:name", a.delete)
+		root.GET("/:name", a.retrieve)
 	}
 
 	return router

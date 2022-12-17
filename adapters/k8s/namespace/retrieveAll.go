@@ -1,4 +1,4 @@
-package k8s
+package namespace
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (a adapter) RetrieveAllNamespaces(ctx context.Context) ([]models.Namespace, error) {
+func (a adapter) RetrieveAll(ctx context.Context) ([]models.Namespace, error) {
 	namespaceList, err := a.ClientSet.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err

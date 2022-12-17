@@ -7,7 +7,7 @@ import (
 )
 
 func (s *service) CreateNamespace(ctx context.Context, namespace models.Namespace) error {
-	err := s.Adapter.CreateNamespace(ctx, namespace)
+	err := s.Adapter.Create(ctx, namespace)
 	if err != nil {
 		return err
 	}

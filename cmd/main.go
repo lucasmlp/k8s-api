@@ -4,23 +4,26 @@ import (
 	"log"
 
 	"github.com/machado-br/k8s-api/adapters/k8s"
+	namespaceAdapter "github.com/machado-br/k8s-api/adapters/k8s/namespace"
 	"github.com/machado-br/k8s-api/api"
-	"github.com/machado-br/k8s-api/services/namespace"
+	namespaceService "github.com/machado-br/k8s-api/services/namespace"
 )
 
 func main() {
 
-	adapter, err := k8s.NewAdapter(false)
+	ClientSet, err := k8s.RetrieveClientSet(false)
 	if err != nil {
 		log.Fatalf("failed while creating k8s adapter: %v", err)
 	}
 
-	namespaceService := namespace.NewService(adapter)
+	namespaceAdapter := namespaceAdapter.NewAdapter(ClientSet)
 	if err != nil {
-		log.Fatalf("failed while creating k8s adapter: %v", err)
+		log.Fatalf("failed while creating namespace adapter: %v", err)
 	}
 
-	api, err := api.NewApi(adapter, namespaceService)
+	namespaceService := namespaceService.NewService(namespaceAdapter)
+
+	api, err := api.NewApi(namespaceService)
 	if err != nil {
 		log.Fatalf("failed while creating api: %v", err)
 	}

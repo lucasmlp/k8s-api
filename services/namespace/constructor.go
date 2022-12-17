@@ -1,12 +1,16 @@
 package namespace
 
-import "github.com/machado-br/k8s-api/adapters/k8s"
+import (
+	"github.com/machado-br/k8s-api/adapters/k8s/namespace"
+)
 
 type service struct {
-	Adapter k8s.Adapter
+	Adapter namespace.Adapter
 }
 
-func NewService(adapter k8s.Adapter) Service {
+func NewService(
+	adapter namespace.Adapter,
+) Service {
 	return &service{
 		Adapter: adapter,
 	}
