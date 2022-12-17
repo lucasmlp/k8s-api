@@ -37,8 +37,9 @@ func (a API) Engine() *gin.Engine {
 			c.JSON(http.StatusOK, "pong")
 		})
 
-		root.GET("/", a.retrieveNamespaces)
-		root.POST("/", a.createNamespaces)
+		root.GET("/", a.retrieveAll)
+		root.POST("/", a.create)
+		root.DELETE("/:name", a.delete)
 	}
 
 	return router

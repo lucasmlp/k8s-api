@@ -8,4 +8,5 @@ import (
 
 type Service interface {
 	CreateNamespace(ctx context.Context, namespace models.Namespace) error
+	DeleteNamespace(ctx context.Context, name string) error
 }

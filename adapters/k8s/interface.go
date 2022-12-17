@@ -10,4 +10,5 @@ import (
 type Adapter interface {
 	RetrieveNamespaces(ctx context.Context) (*v1.NamespaceList, error)
 	CreateNamespace(ctx context.Context, namespace models.Namespace) error
+	DeleteNamespace(ctx context.Context, name string) error
 }

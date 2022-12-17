@@ -9,7 +9,7 @@ import (
 	"github.com/machado-br/k8s-api/models"
 )
 
-func (a API) retrieveNamespaces(c *gin.Context) {
+func (a API) retrieveAll(c *gin.Context) {
 
 	result, err := a.Adapter.RetrieveNamespaces(c)
 	if err != nil {
@@ -20,7 +20,7 @@ func (a API) retrieveNamespaces(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (a API) createNamespaces(c *gin.Context) {
+func (a API) create(c *gin.Context) {
 
 	var payload payloads.Namespace
 	err := c.ShouldBindJSON(&payload)
@@ -41,4 +41,17 @@ func (a API) createNamespaces(c *gin.Context) {
 	}
 
 	c.Status(http.StatusCreated)
+}
+
+func (a API) delete(c *gin.Context) {
+
+	name := c.Param("name")
+
+	err := a.NamespaceService.DeleteNamespace(c, name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

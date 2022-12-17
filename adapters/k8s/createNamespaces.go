@@ -8,15 +8,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (a adapter) RetrieveNamespaces(ctx context.Context) (*v1.NamespaceList, error) {
-	namespaceList, err := a.ClientSet.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-
-	return namespaceList, nil
-}
-
 func (a adapter) CreateNamespace(ctx context.Context, namespaceModel models.Namespace) error {
 	namespace := &v1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
