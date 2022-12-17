@@ -5,18 +5,27 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/machado-br/k8s-api/adapters/k8s"
+	"github.com/machado-br/k8s-api/services/namespace"
 )
 
-type api struct {
+type API struct {
+	Deployed         bool
+	Adapter          k8s.Adapter
+	NamespaceService namespace.Service
 }
 
 func NewApi(
-) (api, error) {
-	return api{
+	adapter k8s.Adapter,
+	namespaceService namespace.Service,
+) (API, error) {
+	return API{
+		Adapter:          adapter,
+		NamespaceService: namespaceService,
 	}, nil
 }
 
-func (a api) Engine() *gin.Engine {
+func (a API) Engine() *gin.Engine {
 	router := gin.New()
 	router.SetTrustedProxies(nil)
 
@@ -27,12 +36,15 @@ func (a api) Engine() *gin.Engine {
 
 			c.JSON(http.StatusOK, "pong")
 		})
+
+		root.GET("/", a.retrieveNamespaces)
+		root.POST("/", a.createNamespaces)
 	}
 
 	return router
 }
 
-func (a api) Run() {
+func (a API) Run() {
 
 	router := a.Engine()
 	router.Run()
