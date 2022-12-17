@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/machado-br/k8s-api/models"
-	v1 "k8s.io/api/core/v1"
 )
 
 type Adapter interface {
-	RetrieveNamespaces(ctx context.Context) (*v1.NamespaceList, error)
+	RetrieveAllNamespaces(ctx context.Context) ([]models.Namespace, error)
 	CreateNamespace(ctx context.Context, namespace models.Namespace) error
 	DeleteNamespace(ctx context.Context, name string) error
 }

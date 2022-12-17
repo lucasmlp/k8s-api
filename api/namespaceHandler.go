@@ -11,7 +11,7 @@ import (
 
 func (a API) retrieveAll(c *gin.Context) {
 
-	result, err := a.Adapter.RetrieveNamespaces(c)
+	result, err := a.NamespaceService.RetrieveAll(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

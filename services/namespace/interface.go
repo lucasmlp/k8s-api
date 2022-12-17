@@ -7,6 +7,7 @@ import (
 )
 
 type Service interface {
+	RetrieveAll(ctx context.Context) ([]models.Namespace, error)
 	CreateNamespace(ctx context.Context, namespace models.Namespace) error
 	DeleteNamespace(ctx context.Context, name string) error
 }

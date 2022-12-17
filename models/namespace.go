@@ -3,7 +3,8 @@ package models
 import "errors"
 
 type Namespace struct {
-	Name string
+	Name   string
+	Status interface{}
 }
 
 func NewNamespace(name string) (*Namespace, error) {
