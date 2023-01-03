@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-api
+  labels:
+    app: k8s-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-api
+  template:
+    metadata:
+      labels:
+        app: k8s-api
+    spec:
+      containers:
+      - name: k8s-api
+        image: 774429751797.dkr.ecr.us-west-2.amazonaws.com/k8s-api:master
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
