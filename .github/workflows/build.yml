@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+  workflow_dispatch:
 
 env:
   GO_VERSION: "1.18"
@@ -11,36 +12,4 @@ env:
 
 jobs:
   test:
-    name: Test - Go v${{ matrix.go-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version: ["1.18"]
-    steps:
-      - name: 🛒 Checkout
-        id: checkout
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-
-      - name: ⚙️ Setup Go
-        id: setup-go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-
-      - name: ⚙️ Setup staticcheck
-        id: setup-staticcheck
-        run: go install honnef.co/go/tools/cmd/staticcheck@latest
-
-      - name: 🔎 Verify dependencies
-        id: go-verify
-        run: go mod verify
-
-      - name: 🔨 Build
-        id: go-build
-        run: go build -v ./...
-
-      - name: 🧐 Go Vet
-        id: go-vet
-        run: go vet ./...
+    uses: lucasmlp/actions/go-test.yml@master
