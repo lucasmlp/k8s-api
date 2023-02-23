@@ -1,4 +1,4 @@
-name: Pull-Request
+name: Pull Request
 
 on:
   pull_request:
@@ -10,4 +10,4 @@ env:
 
 jobs:
   test:
-    uses: lucasmlp/actions/go-test.yml@master
+    uses: lucasmlp/actions/.github/workflows/go-test.yml@master

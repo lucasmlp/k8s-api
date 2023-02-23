@@ -12,7 +12,7 @@ env:
 
 jobs:
   test:
-    uses: lucasmlp/actions/go-test.yml@master
+    uses: lucasmlp/actions/.github/workflows/go-test.yml@master
 
   build:
-    uses: lucasmlp/actions/go-build.yml@master
+    uses: lucasmlp/actions/.github/workflows/go-build.yml@master
