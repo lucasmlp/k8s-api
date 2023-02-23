@@ -1,4 +1,4 @@
-name: Build
+name: Main
 
 on:
   push:
@@ -13,3 +13,6 @@ env:
 jobs:
   test:
     uses: lucasmlp/actions/go-test.yml@master
+
+  build:
+    uses: lucasmlp/actions/go-build.yml@master
