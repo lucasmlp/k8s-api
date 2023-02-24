@@ -3,10 +3,8 @@ name: Manual Test
 on:
   workflow_dispatch:
 
-env:
-  GO_VERSION: "1.18"
-  ECR_REPOSITORY: k8s-api
-
 jobs:
   test:
     uses: lucasmlp/actions/.github/workflows/go-test.yml@master
+    with:
+      go-version: '1.18'
