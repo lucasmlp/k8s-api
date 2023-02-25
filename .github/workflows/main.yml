@@ -16,7 +16,7 @@ jobs:
     needs: test
     uses: lucasmlp/actions/.github/workflows/go.build.yml@master
     with:
-      timeout-minutes: 15
+      timeout-minutes: 1
       AWS_REGION: ${{ vars.AWS_REGION }}
       ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
     secrets:
