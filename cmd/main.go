@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"strconv"
 
 	"github.com/machado-br/k8s-api/adapters/k8s"
 	namespaceAdapter "github.com/machado-br/k8s-api/adapters/k8s/namespace"
@@ -9,9 +12,28 @@ import (
 	namespaceService "github.com/machado-br/k8s-api/services/namespace"
 )
 
-func main() {
+func getStrEnv(key string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		panic(fmt.Sprintf("failed to retrieve string variable %v", key))
+	}
+	return val
+}
 
-	ClientSet, err := k8s.RetrieveClientSet(false)
+func getBoolEnv(key string) bool {
+	stringValue := getStrEnv(key)
+	ret, err := strconv.ParseBool(stringValue)
+	if err != nil {
+		panic(fmt.Sprintf("failed to retrieve boolean variable %v", key))
+	}
+
+	return ret
+}
+
+func main() {
+	deployed := getBoolEnv("DEPLOYED")
+
+	ClientSet, err := k8s.RetrieveClientSet(deployed)
 	if err != nil {
 		log.Fatalf("failed while creating k8s adapter: %v", err)
 	}
