@@ -8,14 +8,14 @@ on:
 
 jobs:
   test:
-    uses: lucasmlp/actions/.github/workflows/go.test.yml@master
+    uses: lucasmlp/actions/.github/workflows/go.test.yml@v1
     with:
       go-version: '1.18'
       timeout-minutes: 5
 
   build:
     needs: test
-    uses: lucasmlp/actions/.github/workflows/docker.build.yml@master
+    uses: lucasmlp/actions/.github/workflows/docker.build.yml@v1
     with:
       timeout-minutes: 5
       aws-region: ${{ vars.AWS_REGION }}
