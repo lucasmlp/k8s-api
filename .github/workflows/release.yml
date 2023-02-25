@@ -7,11 +7,11 @@ on:
 
 jobs:
   release-version:
-    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0-rc.3
+    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0-rc.4
 
   build:
     needs: release-version
-    uses: lucasmlp/actions/.github/workflows/docker.build.yml@v1.1.0-rc.3
+    uses: lucasmlp/actions/.github/workflows/docker.build.yml@v1.1.0-rc.4
     with:
       timeout-minutes: 5
       aws-region: ${{ vars.AWS_REGION }}
