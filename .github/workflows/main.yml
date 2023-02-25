@@ -14,3 +14,11 @@ jobs:
 
   build:
     uses: lucasmlp/actions/.github/workflows/go.build.yml@master
+    with:
+      timeout-minutes: 15
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
