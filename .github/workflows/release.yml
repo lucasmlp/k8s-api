@@ -7,7 +7,7 @@ on:
 
 jobs:
   release-version:
-    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0-rc.1
+    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0-rc.2
 
   build:
     needs: release-version
@@ -16,7 +16,7 @@ jobs:
       timeout-minutes: 5
       aws-region: ${{ vars.AWS_REGION }}
       ecr-repository: ${{ vars.ECR_REPOSITORY }}
-      tag: ${{ env.RELEASE_VERSION }}
+      tag: ${{ needs.release-version.outputs.release-version }}
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
