@@ -17,7 +17,7 @@ jobs:
     needs: test
     uses: lucasmlp/actions/.github/workflows/docker.build.yml@master
     with:
-      timeout-minutes: 10
+      timeout-minutes: 5
       aws-region: ${{ vars.AWS_REGION }}
       ecr-repository: ${{ vars.ECR_REPOSITORY }}
     secrets:
