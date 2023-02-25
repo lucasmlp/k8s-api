@@ -13,6 +13,7 @@ jobs:
       go-version: '1.18'
 
   build:
+    needs: test
     uses: lucasmlp/actions/.github/workflows/go.build.yml@master
     with:
       timeout-minutes: 15
