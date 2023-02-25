@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags:        
+      - '*'
+
+jobs:
+  release-version:
+    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0
+
+  build:
+    needs: release-version
+    uses: lucasmlp/actions/.github/workflows/docker.build.yml@v1.1.0
+    with:
+      timeout-minutes: 5
+      aws-region: ${{ vars.AWS_REGION }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY }}
+      tag: ${{ needs.release-version.outputs.release-version }}
+    secrets:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      ecr-registry: ${{ secrets.ECR_REGISTRY }}

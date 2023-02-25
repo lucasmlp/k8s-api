@@ -12,15 +12,3 @@ jobs:
     with:
       go-version: '1.18'
       timeout-minutes: 5
-
-  build:
-    needs: test
-    uses: lucasmlp/actions/.github/workflows/docker.build.yml@v1
-    with:
-      timeout-minutes: 5
-      aws-region: ${{ vars.AWS_REGION }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY }}
-    secrets:
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      ecr-registry: ${{ secrets.ECR_REGISTRY }}
