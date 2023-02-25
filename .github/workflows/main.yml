@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    uses: lucasmlp/actions/.github/workflows/go.test.yml@v1
+    uses: lucasmlp/actions/.github/workflows/go.test.yml@v1.1.0
     with:
       go-version: '1.18'
       timeout-minutes: 5
