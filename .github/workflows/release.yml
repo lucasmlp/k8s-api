@@ -7,10 +7,7 @@ on:
 
 jobs:
   release-version:
-    steps:
-      - name: Set Release Version
-        id: set-release-version
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+    uses: lucasmlp/actions/.github/workflows/release.version.yml@v1.1.0-rc.1
 
   build:
     needs: release-version
