@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-api
+  labels:
+    app: k8s-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-api
+  template:
+    metadata:
+      labels:
+        app: k8s-api
+    spec:
+      serviceAccountName: k8s-api-dev
+      containers:
+      - name: k8s-api
+        image: 774429751797.dkr.ecr.us-west-2.amazonaws.com/k8s-api:v0.4.0-rc.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: DEPLOYED
+          value: "true"
